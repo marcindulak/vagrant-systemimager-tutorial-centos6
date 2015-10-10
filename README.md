@@ -70,7 +70,6 @@ Verify that mpi4py (an example MPI application), works across the nodes::
 
       $ vagrant ssh node101 -c "sudo su - vagrant -c 'sshpass -p vagrant ssh -o StrictHostKeyChecking=no node102 hostname'"
       $ vagrant ssh node101 -c '. /etc/profile.d/modules.sh; module load mpich-x86_64; `which mpiexec` -env PYTHONPATH `rpm --eval %python_sitearch`/mpich -iface eth1 --host node101,node102 `rpm --eval %python_sitearch`/mpich/mpi4py/bin/python-mpi -c "from mpi4py import MPI; print MPI.COMM_WORLD.Get_rank()"'
-      # $ vagrant ssh node101 -c '. /etc/profile.d/modules.sh; module load openmpi-x86_64; `which mpiexec` -x PYTHONPATH=`rpm --eval %python_sitearch`/openmpi --mca plm_rsh_agent "ssh -o StrictHostKeyChecking=no" --mca btl_tcp_if_exclude lo,eth0 --map-by slot --host node101,node102 `rpm --eval %python_sitearch`/openmpi/mpi4py/bin/python-mpi -c "from mpi4py import MPI; print MPI.COMM_WORLD.Get_rank()"'  # exit 1 - no error
 
 When done, destroy the test machines with::
 
@@ -149,3 +148,5 @@ Todo
    on the top of Vagrantfile instead of hard-coding the IPs
 
 2. openmpi exit 1 with no further output
+
+      $ vagrant ssh node101 -c '. /etc/profile.d/modules.sh; module load openmpi-x86_64; `which mpiexec` -x PYTHONPATH=`rpm --eval %python_sitearch`/openmpi --mca plm_rsh_agent "ssh -o StrictHostKeyChecking=no" --mca btl_tcp_if_exclude lo,eth0 --map-by slot --host node101,node102 `rpm --eval %python_sitearch`/openmpi/mpi4py/bin/python-mpi -c "from mpi4py import MPI; print MPI.COMM_WORLD.Get_rank()"'  # exit 1 - no error
