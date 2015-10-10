@@ -148,3 +148,4 @@ Todo
 1. the configuration of the dhcp server should make use of the list of nodes defined
    on the top of Vagrantfile instead of hard-coding the IPs
 
+2. openmpi exit 1 with no further output
