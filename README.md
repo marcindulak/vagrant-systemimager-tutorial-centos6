@@ -149,4 +149,4 @@ Todo
 
 2. openmpi exit 1 with no further output
 
-      $ vagrant ssh node101 -c '. /etc/profile.d/modules.sh; module load openmpi-x86_64; `which mpiexec` -x PYTHONPATH=`rpm --eval %python_sitearch`/openmpi --mca plm_rsh_agent "ssh -o StrictHostKeyChecking=no" --mca btl_tcp_if_exclude lo,eth0 --map-by slot --host node101,node102 `rpm --eval %python_sitearch`/openmpi/mpi4py/bin/python-mpi -c "from mpi4py import MPI; print MPI.COMM_WORLD.Get_rank()"'  # exit 1 - no error
+        $ vagrant ssh node101 -c '. /etc/profile.d/modules.sh; module load openmpi-x86_64; `which mpiexec` -x PYTHONPATH=`rpm --eval %python_sitearch`/openmpi --mca plm_rsh_agent "ssh -o StrictHostKeyChecking=no" --mca btl_tcp_if_exclude lo,eth0 --map-by slot --host node101,node102 `rpm --eval %python_sitearch`/openmpi/mpi4py/bin/python-mpi -c "from mpi4py import MPI; print MPI.COMM_WORLD.Get_rank()"'  # exit 1 - no error
