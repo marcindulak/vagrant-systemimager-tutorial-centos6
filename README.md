@@ -4,7 +4,7 @@ Description
 
 This is a CentOS systemimager http://systemimager.org/ installation consisting of a server,
 golden client, and 3 nodes.
-Systemimager has been popular at the beginning of the 21th century for deploying HPC installations,
+Systemimager has been popular at the beginning of the 21st century for deploying HPC installations,
 and used as a base for Open Source Cluster Application Resources (OSCAR) oscar.openclustergroup.org.
 
 
