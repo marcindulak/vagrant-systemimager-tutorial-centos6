@@ -1,4 +1,4 @@
-# -*- mode: ruby -*-i
+# -*- mode: ruby -*-
 # vi: set ft=ruby :
 
 OSCAR_RELEASE="6.1.2r11073-1"
