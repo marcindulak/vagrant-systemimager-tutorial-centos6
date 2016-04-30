@@ -3,11 +3,11 @@
 
 OSCAR_RELEASE="6.1.2r11073-1"
 
-goldenclientIP="192.168.1.10"
-serverIP="192.168.1.5"
-nodes=[["node101", "192.168.1.101", "080027000101"],
-       ["node102", "192.168.1.102", "080027000102"],
-       ["node103", "192.168.1.103", "080027000103"]]
+goldenclientIP="192.168.10.10"
+serverIP="192.168.10.5"
+nodes=[["node101", "192.168.10.101", "080027000101"],
+       ["node102", "192.168.10.102", "080027000102"],
+       ["node103", "192.168.10.103", "080027000103"]]
 
 # http://stackoverflow.com/questions/23926945/specify-headless-or-gui-from-command-line
 def gui_enabled?
@@ -208,17 +208,17 @@ subnet ${NETWORK} netmask ${NETMASK} {
 host node101 {
    option host-name "node101";
    hardware ethernet 08:00:27:00:01:01;
-   fixed-address 192.168.1.101;
+   fixed-address 192.168.10.101;
 }
 host node102 {
    option host-name "node102";
    hardware ethernet 08:00:27:00:01:02;
-   fixed-address 192.168.1.102;
+   fixed-address 192.168.10.102;
 }
 host node103 {
    option host-name "node103";
    hardware ethernet 08:00:27:00:01:03;
-   fixed-address 192.168.1.103;
+   fixed-address 192.168.10.103;
 }
 END
 SCRIPT
@@ -354,7 +354,7 @@ SCRIPT
     # configure dhcpd for systemimager pxe tftp
     server.vm.provision "shell" do |s|
       s.inline = $etc_dhcp_dhcpd_conf
-      s.args   =  serverIP + " 192.168.1.0 255.255.255.0 192.168.1.254 192.168.1.101 192.168.1.103"
+      s.args   =  serverIP + " 192.168.10.0 255.255.255.0 192.168.10.254 192.168.10.101 192.168.10.103"
     end
     server.vm.provision :shell, :inline => "service dhcpd start"
     server.vm.provision :shell, :inline => "chkconfig dhcpd on"
