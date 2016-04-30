@@ -21,24 +21,24 @@ Note that eth0 is used by Vagrant. Vagrant reserves eth0 and this cannot be curr
 A node (e.g. node101) when booting is installed with the goldenclient image.
 
 
-						   eth0
-		  |--------------------------------------------------------------------------
-		  |                                                                         |
-		  |              192.168.10.5                                               |
-		  |          -------------------                 -----------                |
+                                                   eth0
+                  |--------------------------------------------------------------------------
+                  |                                                                         |
+                  |              192.168.10.5                                               |
+                  |          -------------------                 -----------                |
       ----------------  eth0 | server on eth1  |      eth1       | node101 | 192.168.10.101 |
       | Vagrant HOST | ------|                 |-----------------| node102 | 192.168.10.102 |
       ----------------       | dhcp, tftp, pxe | 192.168.10.0/24 | node103 | 192.168.10.103 |
-		  |          -------------------                 | ...     | ...            |
-		  | eth0     |             |                     |         |----------------|
-		  |          | eth0        |                     |         |
-	     -----------------             | eth1                |         |
-	  ---| golden client |-----------------------------------|         |
-	  |  -----------------          192.168.10.0/24          -----------
-	  |     192.168.10.10                                        |
-	  |                                                          |
-	  |-----------------------------------------------------------
-				       eth0
+                  |          -------------------                 | ...     | ...            |
+                  | eth0     |             |                     |         |----------------|
+                  |          | eth0        |                     |         |
+             -----------------             | eth1                |         |
+          ---| golden client |-----------------------------------|         |
+          |  -----------------          192.168.10.0/24          -----------
+          |     192.168.10.10                                        |
+          |                                                          |
+          |-----------------------------------------------------------
+                                       eth0
 
 
 ------------
@@ -97,12 +97,12 @@ Problems
 
 1. installation of an LVM based CentOS 6 box hangs at lvcreate. with:
 
-	lvcreate -L19439616K -n lv_root VolGroup || shellout
+        lvcreate -L19439616K -n lv_root VolGroup || shellout
 
    In order to use an LVM goldenclient box do **NOT** set the
    CLIENT_NO_LVM environment variable::
 
-	$ GUI=y CLIENT_KEXEC=y vagrant up goldenclient server node101
+        $ GUI=y CLIENT_KEXEC=y vagrant up goldenclient server node101
 
 2. a (non-LVM) node installed with systemimager hangs with a black VBox screen after reboot.
    Reboot is performed when the CLIENT_KEXEC environment variable is **NOT** set, i.e.
@@ -111,33 +111,33 @@ Problems
    and enable bioslogodisplaytime. At first boot manually choose LAN pxe boot, the system
    will reboot itself after imaging is finished and hang at boot from disk.
 
-	$ GUI=y CLIENT_NO_LVM=y vagrant up goldenclient server node101
+        $ GUI=y CLIENT_NO_LVM=y vagrant up goldenclient server node101
 
 3. updating the goldenclient image (si_prepareclient) and trying to fetch it (si_getimage) fails with:
 
-	 rsync: read error: Connection reset by peer (104)
-	 rsync error: error in rsync protocol data stream (code 12) at io.c(759) [receiver=3.0.6]
-	 ------------- goldenclient mounted_filesystems RETRIEVAL FINISHED -------------
-	 Failed to retrieve /etc/systemimager/mounted_filesystems from goldenclient.
+         rsync: read error: Connection reset by peer (104)
+         rsync error: error in rsync protocol data stream (code 12) at io.c(759) [receiver=3.0.6]
+         ------------- goldenclient mounted_filesystems RETRIEVAL FINISHED -------------
+         Failed to retrieve /etc/systemimager/mounted_filesystems from goldenclient.
 
    It has been suggested this can be due to rsync requiring reverse DNS lookup
    https://test.sc.fsu.edu/twiki/pub/TechHelp/MorphBank/morphbank-probs.txt
    The suggestion of populating `/etc/hosts` at that page is incorrect.
    First, we need rsync >= 3.1.0 on the goldenclient in order to disable reverse DNS lookups:
 
-	 $ vagrant ssh goldenclient -c "sudo su - -c 'yum install -y http://pkgs.repoforge.org/rsync/rsync-3.1.1-1.el6.rfx.x86_64.rpm'"
+         $ vagrant ssh goldenclient -c "sudo su - -c 'yum install -y http://pkgs.repoforge.org/rsync/rsync-3.1.1-1.el6.rfx.x86_64.rpm'"
 
    Then disable reverse DNS lookups on the goldenclient:
 
-	 $ vagrant ssh goldenclient -c "sudo su - -c \"sed -i '/log file/areverse lookup = no' /etc/systemimager/rsyncd.conf\""
+         $ vagrant ssh goldenclient -c "sudo su - -c \"sed -i '/log file/areverse lookup = no' /etc/systemimager/rsyncd.conf\""
 
    and create the new image with si_prepareclient:
 
-	 $ vagrant ssh goldenclient -c "sudo su - -c 'si_prepareclient --server server -y'"
+         $ vagrant ssh goldenclient -c "sudo su - -c 'si_prepareclient --server server -y'"
 
    Same error from si_getimage::
 
-	 $ vagrant ssh server -c "sudo su - -c \"echo -e '\n\n\n' | si_getimage --golden-client goldenclient --image node --ip-assignment dhcp --post-install kexec\""
+         $ vagrant ssh server -c "sudo su - -c \"echo -e '\n\n\n' | si_getimage --golden-client goldenclient --image node --ip-assignment dhcp --post-install kexec\""
 
 
 ----
@@ -149,4 +149,4 @@ Todo
 
 2. openmpi exit 1 with no further output
 
-	$ vagrant ssh node101 -c '. /etc/profile.d/modules.sh; module load openmpi-x86_64; `which mpiexec` -x PYTHONPATH=`rpm --eval %python_sitearch`/openmpi --mca plm_rsh_agent "ssh -o StrictHostKeyChecking=no" --mca btl_tcp_if_exclude lo,eth0 --map-by slot --host node101,node102 `rpm --eval %python_sitearch`/openmpi/mpi4py/bin/python-mpi -c "from mpi4py import MPI; print MPI.COMM_WORLD.Get_rank()"'  # exit 1 - no error
+        $ vagrant ssh node101 -c '. /etc/profile.d/modules.sh; module load openmpi-x86_64; `which mpiexec` -x PYTHONPATH=`rpm --eval %python_sitearch`/openmpi --mca plm_rsh_agent "ssh -o StrictHostKeyChecking=no" --mca btl_tcp_if_exclude lo,eth0 --map-by slot --host node101,node102 `rpm --eval %python_sitearch`/openmpi/mpi4py/bin/python-mpi -c "from mpi4py import MPI; print MPI.COMM_WORLD.Get_rank()"'  # exit 1 - no error
