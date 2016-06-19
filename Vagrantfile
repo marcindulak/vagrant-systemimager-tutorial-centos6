@@ -240,18 +240,18 @@ SCRIPT
     goldenclient.vm.provision :shell, :inline => "hostname goldenclient", run: "always"
     goldenclient.vm.provision "shell" do |s|
       s.inline = $etc_hosts
-      s.args   = serverIP + " " + "server"
+      s.args   = [serverIP, "server"]
     end
     goldenclient.vm.provision "shell" do |s|
       s.inline = $etc_hosts
-      s.args   = goldenclientIP + " " + "goldenclient"
+      s.args   = [goldenclientIP, "goldenclient"]
     end
     nodes.collect.each_with_index do |data, index|
       ip = data[1]
       name = data[0]
       goldenclient.vm.provision "shell" do |s|
         s.inline = $etc_hosts
-        s.args   = ip + " " + name
+        s.args   = [ip, name]
       end
     end
     goldenclient.vm.provision :shell, :inline => $linux_disable_ipv6,  run: "always"
@@ -260,25 +260,27 @@ SCRIPT
     goldenclient.vm.provision :shell, :inline => $setenforce_0, run: "always"
     goldenclient.vm.provision "shell" do |s|
       s.inline = $ifcfg_device
-      s.args   = goldenclientIP + " 255.255.255.0 eth1"
+      s.args   = [goldenclientIP, "255.255.255.0", "eth1"]
     end
     goldenclient.vm.provision :shell, :inline => "ifup eth1", run: "always"
+    # restarting network fixes RTNETLINK answers: File exists
+    goldenclient.vm.provision :shell, :inline => 'service network restart'
     goldenclient.vm.provision :file, source: "~/.vagrant.d/insecure_private_key", destination: "~vagrant/.ssh/id_rsa"
     goldenclient.vm.provision :shell, :inline => "cp -rp ~vagrant/.ssh ~root/"
     goldenclient.vm.provision :shell, :inline => "yum -y install wget"
     goldenclient.vm.provision :shell, :inline => "wget --no-check-certificate https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub -O ~root/.ssh/authorized_keys"
     goldenclient.vm.provision "shell" do |s|
       s.inline = $chmod_600_dotssh
-      s.args   = "root"
+      s.args   = ["root"]
     end
     goldenclient.vm.provision "shell" do |s|
       s.inline = $chown_dotssh
-      s.args   = "root root"
+      s.args   = ["root", "root"]
     end
     goldenclient.vm.provision :shell, :inline => $epel6
     goldenclient.vm.provision "shell" do |s|
       s.inline = $oscar_release_rhel6
-      s.args   = OSCAR_RELEASE
+      s.args   = [OSCAR_RELEASE]
     end
     goldenclient.vm.provision :shell, :inline => "yum -y install systemimager-client systemimager-x86_64initrd_template"
     goldenclient.vm.provision :shell, :inline => "yum -y install yum-plugin-versionlock"
@@ -295,18 +297,18 @@ SCRIPT
     server.vm.provision :shell, :inline => "hostname server", run: "always"
     server.vm.provision "shell" do |s|
       s.inline = $etc_hosts
-      s.args   = serverIP + " " + "server"
+      s.args   = [serverIP, "server"]
     end
     server.vm.provision "shell" do |s|
       s.inline = $etc_hosts
-      s.args   = goldenclientIP + " " + "goldenclient"
+      s.args   = [goldenclientIP, "goldenclient"]
     end
     nodes.collect.each_with_index do |data, index|
       ip = data[1]
       name = data[0]
       server.vm.provision "shell" do |s|
         s.inline = $etc_hosts
-        s.args   = ip + " " + name
+        s.args   = [ip, name]
       end
     end
     server.vm.provision :shell, :inline => $linux_disable_ipv6_permanently
@@ -315,30 +317,32 @@ SCRIPT
     server.vm.provision :shell, :inline => $setenforce_0, run: "always"
     server.vm.provision "shell" do |s|
       s.inline = $ifcfg_device
-      s.args   = serverIP + " 255.255.255.0 eth1"
+      s.args   = [serverIP, "255.255.255.0", "eth1"]
     end
     server.vm.provision :shell, :inline => "ifup eth1", run: "always"
+    # restarting network fixes RTNETLINK answers: File exists
+    server.vm.provision :shell, :inline => 'service network restart'
     server.vm.provision :file, source: "~/.vagrant.d/insecure_private_key", destination: "~vagrant/.ssh/id_rsa"
     server.vm.provision :shell, :inline => "cp -rp ~vagrant/.ssh ~root/"
     server.vm.provision :shell, :inline => "yum -y install wget"
     server.vm.provision :shell, :inline => "wget --no-check-certificate https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub -O ~root/.ssh/authorized_keys"
     server.vm.provision "shell" do |s|
       s.inline = $chmod_600_dotssh
-      s.args   = "root"
+      s.args   = ["root"]
     end
     server.vm.provision "shell" do |s|
       s.inline = $chown_dotssh
-      s.args   = "root root"
+      s.args   = ["root", "root"]
     end
     server.vm.provision :shell, :inline => "yum -y install dhcp"
     server.vm.provision "shell" do |s|
       s.inline = $etc_sysconfig_dhcpd
-      s.args   = "eth1"
+      s.args   = ["eth1"]
     end
     server.vm.provision :shell, :inline => $epel6
     server.vm.provision "shell" do |s|
       s.inline = $oscar_release_rhel6
-      s.args   = OSCAR_RELEASE
+      s.args   = [OSCAR_RELEASE]
     end
     server.vm.provision :shell, :inline => "yum -y install systemconfigurator systemimager-server systemimager-x86_64boot-standard systemimager-x86_64initrd_template"
     server.vm.provision :shell, :inline => "yum -y install yum-plugin-versionlock"
@@ -354,7 +358,7 @@ SCRIPT
     # configure dhcpd for systemimager pxe tftp
     server.vm.provision "shell" do |s|
       s.inline = $etc_dhcp_dhcpd_conf
-      s.args   =  serverIP + " 192.168.10.0 255.255.255.0 192.168.10.254 192.168.10.101 192.168.10.103"
+      s.args   =  [serverIP, "192.168.10.0", "255.255.255.0", "192.168.10.254", "192.168.10.101", "192.168.10.103"]
     end
     server.vm.provision :shell, :inline => "service dhcpd start"
     server.vm.provision :shell, :inline => "chkconfig dhcpd on"
