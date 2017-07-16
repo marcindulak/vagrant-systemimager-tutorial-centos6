@@ -139,6 +139,10 @@ Problems
 
          $ vagrant ssh server -c "sudo su - -c \"echo -e '\n\n\n' | si_getimage --golden-client goldenclient --image node --ip-assignment dhcp --post-install kexec\""
 
+4. July 2017: this error on EL6 marks probably the end of systemimager for good:
+
+         Use of uninitialized value $garbage_in in scalar chomp at /usr/share/perl5/vendor_perl/SystemImager/Common.pm line 267
+
 
 ----
 Todo
