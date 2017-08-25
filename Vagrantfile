@@ -160,7 +160,7 @@ SCRIPT
   # EPEL
   $epel6 = <<SCRIPT
 yum clean all
-yum -y install http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
 SCRIPT
   # oscar-relase
   $oscar_release_rhel6 = <<SCRIPT
